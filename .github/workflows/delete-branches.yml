@@ -20,7 +20,7 @@ jobs:
         run: |
           BRANCH=${{ github.event.pull_request.head.ref }}
 
-          if [[ "$BRANCH" != "main" && "$BRANCH" != "dev" ]]; then
+          if [[ "$BRANCH" != "main" && "$BRANCH" != "dev" && "$BRANCH" != "develop" && "$BRANCH" != "development" ]]; then
             echo "Deleting branch: $BRANCH"
             git push origin --delete "$BRANCH"
           else
