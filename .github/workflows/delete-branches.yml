@@ -1,0 +1,28 @@
+name: Delete merged branches (except main & dev)
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write  # necessário para deletar branches com o GITHUB_TOKEN
+
+jobs:
+  delete-branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete branch if not main or dev
+        run: |
+          BRANCH=${{ github.event.pull_request.head.ref }}
+
+          if [[ "$BRANCH" != "main" && "$BRANCH" != "dev" && "$BRANCH" != "develop" && "$BRANCH" != "development" ]]; then
+            echo "Deleting branch: $BRANCH"
+            git push origin --delete "$BRANCH"
+          else
+            echo "Branch $BRANCH is protected, not deleting."
+          fi
